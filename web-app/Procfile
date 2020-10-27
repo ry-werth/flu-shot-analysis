@@ -1,1 +1,1 @@
-web:python flu_app.py
+web: gunicorn flu_app:app 
