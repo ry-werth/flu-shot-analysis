@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script src="https://kit.fontawesome.com/1d09ecd995.js" crossorigin="anonymous"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flu Analysis</title>
+    <style>
+
+        html {
+          scroll-behavior: smooth;
+        }
+
+        body {
+           font-family: Verdana,Arial,sans-serif;
+           margin: 0;
+        }
+
+        h2 {
+          text-align: center;
+          margin: 0;
+          padding: 30px 0;
+          background-color: #20A39E;
+          font-size: 32px;
+          font-family: Arial, Helvetica, sans-serif;
+          letter-spacing: 1.1px;
+          color: white;
+        }
+
+        .intro-wrapper {
+          width: 50%;
+          margin: 0 auto;
+          font-family: Arial, Helvetica, sans-serif;
+          line-height:1.5;
+          font-size: 18px;
+          padding: 40px 0;
+        }
+
+        .intro-wrapper p{
+
+        }
+
+        .switch-wrapper {
+          display: flex;
+        }
+
+        .switch-wrapper p {
+          padding: 0 10px;
+          margin: 0;
+        }
+
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 45px;
+          height: 20px;
+        }
+
+        .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 16px;
+          width: 16px;
+          left: 2px;
+          bottom: 2px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+          -webkit-transform: translateX(26px);
+          -ms-transform: translateX(26px);
+          transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+          border-radius: 34px;
+        }
+
+        .slider.round:before {
+          border-radius: 50%;
+        }
+
+        .bar {
+            fill: steelblue;
+        }
+
+        .body-wrapper {
+          margin-top: 50px;
+        }
+
+        .flex-container {
+          display: flex;
+          justify-content: space-around;
+        }
+
+        .section-wrapper {
+          padding: 15px 0;
+        }
+
+        .input-section {
+          display: none;
+        }
+
+        .input-section.active {
+          display: block;
+        }
+
+        .dropdowns {
+
+        }
+
+        .individ-dropdown {
+          padding: 10px;
+        }
+
+        .individ-dropdown.even {
+          background-color: #BEBEBE;
+          border-left: 1px black solid;
+          border-right: 1px black solid;
+        }
+
+        .individ-dropdown.odd {
+          border: 1px black solid;
+        }
+
+        .dropdowns select {
+          float: right;
+          margin-right: 10px;
+          padding: 5px;
+          margin-top: -5px;
+        }
+
+        .individ-binary {
+          padding: 5px 0;
+        }
+
+        .flex-1 {
+          width: 30%;
+        }
+
+        .visual-wrapper {
+          width: 40%;
+        }
+
+        .visual-wrapper h3{
+          text-align: center;
+          width: 75%;
+          margin-bottom: 30px;
+          margin-top: 0;
+        }
+
+        .flex-2 {
+        }
+
+        .tick {
+          font-size: 20px;
+        }
+
+        #main-graph{
+          overflow: inherit;
+        }
+
+        .arrow-bounce {
+          text-align: center;
+          padding: 10px 0;
+        }
+
+        .arrow-bounce:hover {
+          cursor: pointer;
+          -moz-animation: bounce 1.5s infinite;
+          -webkit-animation: bounce 1.5s infinite;
+          animation: bounce 1.5s infinite;
+        }
+
+        .arrow-bounce i {
+          color: black;
+        }
+
+        @keyframes bounce {
+          0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+          }
+          40% {
+            transform: translateY(-30px);
+          }
+          60% {
+            transform: translateY(-15px);
+          }
+        }
+
+        footer {
+          height: 200px;
+          width: 100%;
+        }
+
+    </style>
+  </head>
+
+  <body>
+
+
+    <div id="chart_title" class="wrapper">
+      <h2>Seasonal and H1N1 Flu Analysis</h2>
+    </div>
+
+    <div class="intro-wrapper">
+      <p>
+        Vaccines are a cornerstone of public health. They provide immunization for individuals, and enough immunization in a community can further reduce the spread of diseases through "herd immunity."
+      </p>
+      <p>
+        This page provides an interactive "dashboard" for a predictive model I built using data from the <a href="https://webarchive.loc.gov/all/20140511031000/http://www.cdc.gov/nchs/nis/about_nis.htm#h1n1">U.S. National 2009 H1N1 Flu Survey (NHFS).</a> The survey was conducted by the Centers for Disease Control and Prevention (CDC) "in order to monitor and evaluate flu vaccination efforts among adults and children". This phone survey asked people whether they had received H1N1 and seasonal flu vaccines, in conjunction with information they shared about their lives, opinions, and behaviors.
+      </p>
+      <p>
+        I built a <a href="https://en.wikipedia.org/wiki/Random_forest">Random Decision Forest Model</a> using answers from the survey to predict how likely individuals were to receive their H1N1 and seasonal flu vaccines. A better understanding of how certain characteristics have been associated with personal vaccination patterns may provide guidance for future public health efforts.
+      </p>
+    </div>
+
+    <div class="arrow-bounce">
+      <a href="#main-content_1">
+        <i class="fas fa-arrow-down fa-2x"></i>
+      </a>
+    </div>
+
+    <div class="body-wrapper flex-container" id="main-content_1">
+
+      <div class="input-wrapper flex-1">
+        <div class="switch-wrapper">
+          <p>Multiple Options</p>
+          <label class="switch">
+            <input type="checkbox" onchange="switchFunction( this.checked)">
+            <span class="slider round"></span>
+          </label>
+          <p>Binary Inputs</p>
+        </div>
+
+        <div class="input-section active">
+          <div id="sliders" class="section-wrapper sliders">
+            {% for slider in scale_questions %}
+              <div>
+                <input type="range" id={{slider[0]}} name={{slider[1]}} value="2"
+                       min="0" max={{slider[2]}} list="tickmarks" onchange="sliderFunction( this.id, this.value)">
+                <label for={{slider[0]}}>{{slider[1]}}</label>
+              </div>
+            {% endfor %}
+            <datalist id="tickmarks">
+              <option value="0" label="0"></option>
+              <option value="1" label="1"></option>
+              <option value="2" label="2"></option>
+              <option value="3" label="3"></option>
+              <option value="4" label="4"></option>
+              <option value="5" label="5"></option>
+            </datalist>
+          </div>
+
+          <div class="section-wrapper dropdowns">
+            <div id="dropdown">
+            {% for dropdown in dropdown_questions %}
+            <div class="individ-dropdown {{ loop.cycle('odd', 'even') }}">
+              <label for="">{{dropdown["label"]}}</label>
+              <select name={{dropdown["cat_id"]}} id={{dropdown["cat_id"]}} onchange="dropdownFunction( this.id, this.value)">
+                {% for value in dropdown["values"] %}
+                  <option value={{value[1]}}>{{value[0]}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            {% endfor %}
+            </div>
+
+            <div id="dummy-dropdown">
+            {% for dummy_dropdown in dummy_dropdown_data %}
+            <div class="individ-dropdown {{ loop.cycle('odd', 'even') }}">
+              <label for="">{{dummy_dropdown["label"]}}</label>
+              <select name={{dummy_dropdown["cat_id"]}} id={{dummy_dropdown["cat_id"]}} onchange="dummyDropdownFunction( this, this.id, this.value)">
+                {% for value in dummy_dropdown["values"] %}
+                  <option value={{value[1]}}>{{value[0]}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="section-wrapper binary input-section">
+          <div id="binary">
+            {% for binary in binary_data %}
+            <div class="individ-binary">
+              <input type="checkbox" id={{binary[0]}} name={{binary[0]}} value="1" onchange="checkboxFunction( this.id, this.checked)">
+              <label for={{binary[0]}}>{{binary[1]}}</label>
+            </div>
+            {% endfor %}
+          </div>
+
+          <div id="dummy-binary">
+            {% for dummy_binary in dummy_binary_data %}
+            <div class="individ-binary">
+              <input type="checkbox" id={{dummy_binary[0]}} name={{dummy_binary[0]}} value="1" onchange="dummyCheckboxFunction( this.id, this.checked)">
+              <label for={{dummy_binary[0]}}>{{dummy_binary[1]}}</label>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="visual-wrapper">
+        <h3 class="graph-title">Percent Chance a User with The Selected Inputs Got a H1N1 or Seasonal Flu Vaccine</h3>
+        <div id="my_dataviz" class="flex-2"></div>
+      </div>
+    </div>
+
+    <footer>
+    </footer>
+
+    <!-- Import the libraries: jQuery, d3, d3.slider -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://unpkg.com/d3-simple-slider"></script>
+
+    <script>
+        console.log("top of script");
+        // set the dimensions and margins of the graph
+        var margin = {top: 10, right: 30, bottom: 20, left: 50},
+            width = 500 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+        // append the svg object to the body of the page
+        var svg = d3.select("#my_dataviz")
+          .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .attr("id", "main-graph")
+          .append("g")
+            .attr("transform",
+                  "translate(" + margin.left + "," + margin.top + ")");
+
+        // Add Y axis
+        var y = d3.scaleLinear()
+          .domain([0, 100])
+          .range([ height, 0 ]);
+        svg.append("g")
+          .call(d3.axisLeft(y));
+
+        // build fake graph
+        d3.csv("static/data/fake-data.csv", function(error, data) {
+
+          console.log('fake start')
+
+          // List of subgroups = header of the csv files = soil condition here
+          var subgroups = data.columns.slice(1)
+
+
+          // List of groups = species here = value of the first column called group -> I show them on the X axis
+          var groups = d3.map(data, function(d){return(d.Type)}).keys()
+
+
+          // Add X axis
+          var x = d3.scaleBand()
+              .domain(groups)
+              .range([0, width])
+              .padding([.2])
+          svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x).tickSize(0));
+
+          // Another scale for subgroup position?
+          var xSubgroup = d3.scaleBand()
+            .domain(subgroups)
+            .range([0, x.bandwidth()])
+            .padding([0.05])
+
+          // color palette = one color per subgroup
+          var color = d3.scaleOrdinal()
+            .domain(subgroups)
+            .range(['#e41a1c','#377eb8'])
+
+          // Show the bars
+          svg.append("g")
+            .selectAll("g")
+            // Enter in data = loop group per group
+            .data(data)
+            .enter()
+            .append("g")
+              .attr("transform", function(d) { return "translate(" + x(d.Type) + ",0)"; })
+              .attr("id", function(d) { return String(d.Type); })
+            .selectAll("rect")
+            .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key], type: d.Type}; }); })
+            .enter().append("rect")
+              .attr("id", function(d) { return d.type.concat("_").concat(d.key); })
+              .attr("x", function(d) { return xSubgroup(d.key); })
+              .attr("y", function(d) { return y(d.value); })
+              .attr("width", xSubgroup.bandwidth())
+              .attr("height", function(d) { return height - y(d.value); })
+              .attr("fill", function(d) { return color(d.key); });
+
+          var legspacing = 25;
+
+          var legend = svg.selectAll(".legend")
+              .data(subgroups)
+              .enter()
+              .append("g")
+
+          legend.append("rect")
+              .attr("fill", color)
+              .attr("width", 20)
+              .attr("height", 20)
+              .attr("y", function (d, i) {
+                  return i * legspacing;
+              })
+              .attr("x", width-30);
+
+          legend.append("text")
+              .attr("class", "label")
+              .attr("y", function (d, i) {
+                  return i * legspacing+14;
+              })
+              .attr("x", width-8)
+              .attr("text-anchor", "start")
+              .style("font-size", "12px")
+              .text(function (d, i) {
+                  return ["% Chance No Vaccine","% Chance Yes Vaccine"][i];
+              });
+
+          console.log('fake end');
+          var initial_percents = {{ initial_data|safe }};
+          for (const [key, value] of Object.entries(initial_percents)) {
+            console.log(key, value);
+            d3.select(key)
+            .transition()
+            .duration(2000)
+            .attr("height", function() { return height - y(value); })
+            .attr("y", function() { return y(value); });
+          }
+        });
+
+
+
+        <!-- FUNCTION TO GET CHANCE FROM YOUR PREDICTOR WITH AJAX AND CHANGE BAR  HEIGHT -->
+         function getNewPercents(value_id, value){
+          let new_data = {"value_id": value_id, "value": value};
+           $.ajax({
+             type: "POST",
+             contentType: "application/json; charset=utf-8",
+             url: "/api/estimate",
+             dataType: "json",
+             async: true,
+             data: JSON.stringify(new_data),
+             success: function (data) {
+              for (const [key, value] of Object.entries(data)) {
+                d3.select(key)
+                .transition()
+                .duration(2000)
+                .attr("height", function(d) { return height - y(value); })
+                .attr("y", function(d) { return y(value); });
+              }
+             },
+             error: function (result) {
+             }
+           })
+         }
+
+         function sliderFunction(value_id, value) {
+
+          getNewPercents(value_id, value);
+
+         }
+
+         function dropdownFunction(value_id, value) {
+
+          getNewPercents(value_id, value);
+
+         }
+
+         function checkboxFunction(value_id, checked) {
+            if (checked) {
+              console.log('checked!')
+              getNewPercents(value_id, "1");
+            } else {
+              getNewPercents(value_id, "0");
+            }
+         }
+
+         function dummyCheckboxFunction (value_id, checked) {
+            if (checked) {
+              getNewPercents(value_id.concat("_1.0"), "1");
+              getNewPercents(value_id.concat("_0.0"), "0");
+            } else {
+              getNewPercents(value_id.concat("_1.0"), "0");
+              getNewPercents(value_id.concat("_0.0"), "1");
+            }
+         }
+
+         function dummyDropdownFunction ( full_elem, value_id, value) {
+
+          for (i = 0; i < full_elem.length; i++) {
+              let reset_value = full_elem.options[i].value;
+              if (reset_value == "None") {
+              } else {
+                getNewPercents(value_id.concat(reset_value), "0");
+              }
+          }
+
+          if (value == "None") {
+          } else {
+            getNewPercents(value_id.concat(value), "1");
+          }
+        }
+
+        function switchFunction(checked) {
+          $(".input-section").toggle();
+        }
+
+        // on clickaddto the bars
+        d3.select("#main-graph").on("click", function() {
+        });
+
+
+    </script>
+  </body>
+</html>
