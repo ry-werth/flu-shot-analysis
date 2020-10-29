@@ -10,16 +10,6 @@ The data is taken originally from the [U.S. National 2009 H1N1 Flu Survey (NHFS)
 ## Project Goal
 The ultimate goal is to create a prediction model that will identify people who are least likely to get a vaccine for the seasonal flu or a more novel infectious disease. This model will give us an understanding of how certain characteristics have been associated with personal vaccination patterns. This will help provide guidance for future public health efforts.
 
-## Classifiers Explored
-This project was meant to explore all sorts of different classification methods.
-These are what I looked at with my data: 
-- KNN (Nearest Neighbors)
-- Decision Trees and Random Forests
-- Logistic Regression
-- Naive Bayes (Gaussian, Complement,  Categorical)
-- Support Vector Classification
-- XGBoost
-
 
 ## Main Files
 
@@ -31,6 +21,20 @@ These are what I looked at with my data:
   
 - [Final_Workbook.ipynb](work_analysis/Final_Workbook.ipynb) \
   This is the heart of the project. This is where all the modelling and model comparison lies. 
+  
+- [Web App](web-app) \
+  This is where my Web app data was. I ended up using another repo to build it out completely, so this is not the finished product. It does contain the bulk of what I did though
+  
+  
+## Classifiers Explored
+This project was meant to explore all sorts of different classification methods.
+These are what I looked at with my data: 
+- KNN (Nearest Neighbors)
+- Decision Trees and Random Forests
+- Logistic Regression
+- Naive Bayes (Gaussian, Complement,  Categorical)
+- Support Vector Classification
+- XGBoost
   
 
 ## Biggest Challenge
